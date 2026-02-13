@@ -1,0 +1,25 @@
+# Deploy to GitHub Pages when you push to main.
+# In your repo: Settings → Pages → Source: GitHub Actions.
+# Set VITE_BASE to your repo name, e.g. /Cookie/
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+        env:
+          # Change 'Cookie' to your repo name
+          VITE_BASE: '/Cookie/'
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
